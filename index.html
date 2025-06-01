@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Chữ bay phát sáng</title>
+  <style>
+    body {
+      margin: 0; background: black; overflow: hidden; font-family: Arial;
+    }
+    .text {
+      position: absolute; 
+      top: -50px;
+      font-size: 40px;
+      color: #ff69b4;
+      text-shadow: 0 0 10px #ff69b4, 0 0 20px #ff69b4, 0 0 30px #ff69b4;
+      animation: fall 4s linear forwards;
+      white-space: nowrap;
+    }
+    @keyframes fall {
+      0% { top: -50px; opacity: 0;}
+      20% {opacity: 1;}
+      100% { top: 100%; opacity: 0;}
+    }
+  </style>
+</head>
+<body>
+<script>
+  function createText(){
+    const t = document.createElement('div');
+    t.className = 'text';
+    t.innerText = '✨ Chữ bay phát sáng ✨';
+    t.style.left = Math.random() * (window.innerWidth - 200) + 'px';
+    document.body.appendChild(t);
+    t.addEventListener('animationend', () => t.remove());
+  }
+  setInterval(createText, 800);
+</script>
+</body>
+</html>
