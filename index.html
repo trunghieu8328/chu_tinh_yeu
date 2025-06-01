@@ -1,189 +1,128 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <title>Chữ bay phát sáng</title>
-  <style>
-    body {
-      margin: 0; background: black; overflow: hidden; font-family: Arial;
-    }
-    .text {
-      position: absolute; 
-      top: -50px;
-      font-size: 40px;
-    <!DOCTYPE html>
-<html lang="vi">
-<head>
   <meta charset="UTF-8">
-  <title>Trang Chủ Ngôi Sao Xanh Đen ✨</title>
+  <title>Web Chữ & Ảnh Rơi</title>
   <style>
     body {
-      margin: 0; padding: 0;
-      background: #0a0f2c; /* xanh đen */
-      font-family: 'Comic Sans MS', cursive, sans-serif;
-      color: #fff; text-align: center;
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      background: radial-gradient(circle, #0a0f2c, #000);
       overflow: hidden;
-    }
-    h1 {
-      margin-top: 20px;
-      font-size: 50px;
-      text-shadow: 0 0 20px #fff;
-    }
-    .controls {
-      background: rgba(255, 182, 193, 0.8);
-      border-radius: 20px;
-      padding: 20px;
-      display: inline-block;
-      margin-top: 20px;
-      box-shadow: 0 0 20px #ff69b4;
-    }
-    .control-item {
-      margin: 10px 0;
-      padding: 10px;
-      background: #fff0f5;
-      border: 2px solid #ff69b4;
-      border-radius: 15px;
-    }
-    input, button {
-      width: 80%;
-      padding: 10px;
-      margin-top: 5px;
-      border: none;
-      border-radius: 10px;
-      font-size: 16px;
-    }
-    button {
-      background-color: #ff69b4;
       color: white;
-      cursor: pointer;
-      box-shadow: 0 0 10px #ff69b4;
     }
-    button:hover {
-      background-color: #ff1493;
-    }
-    canvas {
+    .control-panel {
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+      top: 10px;
+      left: 10px;
+      background: rgba(255, 182, 193, 0.9);
+      padding: 15px;
+      border-radius: 10px;
+      z-index: 10;
+    }
+    .control-panel input, .control-panel button {
+      display: block;
+      margin: 5px 0;
+      padding: 5px;
+      border-radius: 5px;
+      border: none;
+    }
+    .falling {
+      position: absolute;
+      top: -50px;
+      font-size: 24px;
+      animation: fall linear infinite;
       pointer-events: none;
+    }
+    @keyframes fall {
+      to {
+        transform: translateY(120vh);
+      }
+    }
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 2s infinite alternate;
+    }
+    @keyframes twinkle {
+      from { opacity: 0.2; }
+      to { opacity: 1; }
     }
   </style>
 </head>
 <body>
-  <h1>✨ Trang Chủ Ngôi Sao ✨</h1>
-  <div class="controls">
-    <div class="control-item">
-      <label>Nhập chữ muốn rơi:</label><br>
-      <input type="text" id="textInput" placeholder="Ví dụ: Yêu em 💕" />
-    </div>
-    <div class="control-item">
-      <label>Chọn màu chữ:</label><br>
-      <input type="color" id="colorInput" value="#ff69b4" />
-    </div>
-    <div class="control-item">
-      <label>Tải ảnh muốn rơi (từ máy):</label><br>
-      <input type="file" id="imageInput" accept="image/*" />
-    </div>
-    <div class="control-item">
-      <button onclick="startFalling()">💖 Bắt Đầu 💖</button>
-    </div>
-  </div>
 
-  <canvas id="starCanvas"></canvas>
-  <canvas id="fallingCanvas"></canvas>
+<div class="control-panel">
+  <label>Nhập chữ:</label>
+  <input type="text" id="textInput" placeholder="Ví dụ: Yêu thương">
 
-  <script>
-    const starCanvas = document.getElementById('starCanvas');
-    const starCtx = starCanvas.getContext('2d');
-    const fallCanvas = document.getElementById('fallingCanvas');
-    const fallCtx = fallCanvas.getContext('2d');
-    starCanvas.width = fallCanvas.width = window.innerWidth;
-    starCanvas.height = fallCanvas.height = window.innerHeight;
+  <label>Chọn màu chữ:</label>
+  <input type="color" id="colorInput">
 
-    // Vẽ sao lấp lánh
-    let stars = [];
-    for (let i = 0; i < 200; i++) {
-      stars.push({
-        x: Math.random() * starCanvas.width,
-        y: Math.random() * starCanvas.height,
-        radius: Math.random() * 1.5,
-        alpha: Math.random(),
-        delta: Math.random() * 0.02
-      });
+  <label>Tải ảnh (tuỳ chọn):</label>
+  <input type="file" id="imageInput" accept="image/*">
+
+  <button onclick="startRain()">Bắt đầu rơi</button>
+</div>
+
+<script>
+  // tạo sao lấp lánh
+  for (let i = 0; i < 100; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.top = Math.random() * 100 + '%';
+    star.style.left = Math.random() * 100 + '%';
+    star.style.animationDuration = (Math.random() * 2 + 1) + 's';
+    document.body.appendChild(star);
+  }
+
+  function startRain() {
+    const text = document.getElementById('textInput').value;
+    const color = document.getElementById('colorInput').value;
+    const imageFile = document.getElementById('imageInput').files[0];
+
+    if (text) {
+      setInterval(() => createFallingElement('text', text, color), 300);
     }
 
-    function animateStars() {
-      starCtx.clearRect(0, 0, starCanvas.width, starCanvas.height);
-      stars.forEach(star => {
-        star.alpha += star.delta;
-        if (star.alpha <= 0 || star.alpha >= 1) star.delta = -star.delta;
-        starCtx.beginPath();
-        starCtx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-        starCtx.fillStyle = `rgba(255, 255, 255, ${star.alpha})`;
-        starCtx.fill();
-      });
-      requestAnimationFrame(animateStars);
+    if (imageFile) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        setInterval(() => createFallingElement('image', e.target.result), 300);
+      };
+      reader.readAsDataURL(imageFile);
     }
-    animateStars();
+  }
 
-    // Chữ/ảnh rơi xuống
-    let fallingItems = [];
-    let textContent = '💖 Love 💖';
-    let textColor = '#ff69b4';
-    let imageSrc = null;
+  function createFallingElement(type, content, color) {
+    const el = document.createElement('div');
+    el.className = 'falling';
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.animationDuration = (Math.random() * 2 + 3) + 's';
 
-    function startFalling() {
-      textContent = document.getElementById('textInput').value || '💖 Love 💖';
-      textColor = document.getElementById('colorInput').value || '#ff69b4';
-      const file = document.getElementById('imageInput').files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          imageSrc = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      }
-      animateFalling();
+    if (type === 'text') {
+      el.textContent = content;
+      el.style.color = color;
+    } else if (type === 'image') {
+      const img = document.createElement('img');
+      img.src = content;
+      img.style.width = '40px';
+      img.style.height = '40px';
+      el.appendChild(img);
     }
 
-    function createFallingItem() {
-      const x = Math.random() * fallCanvas.width;
-      const speed = 1 + Math.random() * 2;
-      const rotate = Math.random() * 360;
-      fallingItems.push({ x, y: -50, speed, rotate });
-    }
+    document.body.appendChild(el);
 
-    function animateFalling() {
-      fallCtx.clearRect(0, 0, fallCanvas.width, fallCanvas.height);
-      fallingItems.forEach((item, index) => {
-        fallCtx.save();
-        fallCtx.translate(item.x, item.y);
-        fallCtx.rotate(item.rotate * Math.PI / 180);
-        if (imageSrc) {
-          const img = new Image();
-          img.src = imageSrc;
-          fallCtx.drawImage(img, -20, -20, 40, 40);
-        } else {
-          fallCtx.fillStyle = textColor;
-          fallCtx.font = '30px Comic Sans MS';
-          fallCtx.fillText(textContent, -30, 0);
-        }
-        fallCtx.restore();
-        item.y += item.speed;
-        item.rotate += 2;
-        if (item.y > fallCanvas.height + 50) {
-          fallingItems.splice(index, 1);
-        }
-      });
-      if (Math.random() < 0.1) createFallingItem();
-      requestAnimationFrame(animateFalling);
-    }
+    // xóa sau khi rơi xong
+    setTimeout(() => el.remove(), 5000);
+  }
+</script>
 
-    window.addEventListener('resize', () => {
-      starCanvas.width = fallCanvas.width = window.innerWidth;
-      starCanvas.height = fallCanvas.height = window.innerHeight;
-    });
-  </script>
 </body>
 </html>
+
 
